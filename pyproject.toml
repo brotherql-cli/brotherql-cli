@@ -1,6 +1,6 @@
 [project]
 name = "brotherql-cli"
-version = "1.0.0"
+version = "1.0.1"
 description = "CLI for interfacing with brother-ql printer"
 authors = [
     {name = "Jamie Levitt",email = "jamielevitt1207@gmail.com"}

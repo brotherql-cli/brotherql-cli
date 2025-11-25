@@ -10,6 +10,7 @@ class ConfigSchema(TypedDict):
     IP: str
     MODEL: str
     ATTEMPTS: int
+    REDLABEL: bool
 
 CONF_PATH:Path = Path(typer.get_app_dir(APP_NAME)) / "config.yaml"
 
@@ -21,7 +22,7 @@ def __gen_new_config() -> None:
         except Exception as e:
             raise PrintException(e)
     with open(CONF_PATH, "x") as f:
-        yaml.dump(ConfigSchema(IP="", MODEL="QL-820NWB", ATTEMPTS=4), f, default_flow_style=False)
+        yaml.dump(ConfigSchema(IP="", MODEL="QL-820NWB", ATTEMPTS=4, REDLABEL=False), f, default_flow_style=False)
 
 def __affirm_configfile() -> None:
     if not CONF_PATH.is_file():
@@ -34,10 +35,18 @@ def load_config() -> ConfigSchema:
     with open(CONF_PATH, "r") as f:
         config = yaml.safe_load(f)
     try:
-        return ConfigSchema(config)
+        schema = ConfigSchema(config)
+        for key in ConfigSchema.__annotations__.keys():
+            if key not in schema.keys():
+                if key == "IP": schema["IP"] = ""
+                elif key == "MODEL": schema["MODEL"] = "QL-820NWB"
+                elif key == "ATTEMPTS": schema["ATTEMPTS"] = 4
+                elif key == "REDLABEL": schema["REDLABEL"] = False
+
+        return schema
     except:
         __gen_new_config()
-        return ConfigSchema(IP="", MODEL="QL-820NWB", ATTEMPTS=4)
+        return ConfigSchema(IP="", MODEL="QL-820NWB", ATTEMPTS=4, REDLABEL=False)
 
 def set_config(item:str, val) -> ConfigSchema:
     __affirm_configfile()

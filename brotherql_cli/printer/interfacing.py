@@ -51,7 +51,7 @@ def print_from_lines(label_lines:list[str]):
         dither=False, 
         compress=False, 
         dpi_600=False, 
-        red=True,
+        red=config["REDLABEL"],
         hq=True,  # False for low quality.
         cut=True
     )  
